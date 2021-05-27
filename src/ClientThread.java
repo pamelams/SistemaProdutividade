@@ -42,8 +42,11 @@ public class ClientThread implements Runnable {
 			capitalizedSentence = clientSentence.toUpperCase() + '\n';
 
 			outToClient.writeBytes(oldTest + newTest + capitalizedSentence);*/
+
 			l = Server.getLab();
+			outToClient.reset();
 			outToClient.writeObject(l);
+
 			newLab = (Laboratory) inFromClient.readObject();	
 			if(l.getCollaborators().isEmpty()) {
 				System.out.println("VAZIO NA THREAD!");
@@ -51,7 +54,12 @@ public class ClientThread implements Runnable {
 			else {
 				System.out.println(l.getCollaborators().get(0).getName());
 			}
-			Server.updateLab(newLab);		
+			Server.updateLab(newLab);
+			
+				
+			//outToClient.reset();
+			//outToClient.writeObject(Server.getLab());	
+			//(connectionSocket.isConnected())
 
 		} catch (Exception e) {
 			e.printStackTrace();

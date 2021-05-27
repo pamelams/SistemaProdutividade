@@ -1,3 +1,6 @@
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -9,6 +12,7 @@ public class Laboratory implements Serializable, Cloneable {
     private ArrayList<Project> projects = new ArrayList<Project>();
     private ArrayList<AcademicProduction> productions = new ArrayList<AcademicProduction>();
     private static Scanner read = new Scanner(System.in);
+    private boolean admLogged = false;
 
     public Laboratory() {
 
@@ -38,20 +42,32 @@ public class Laboratory implements Serializable, Cloneable {
     public void setProductions(ArrayList<AcademicProduction> ap) {
         this.productions = ap;
     }
-    public void admLogin() {
+    public boolean getAdmLogged() {
+        return this.admLogged;
+    }
+    public void setAdmLogged(boolean status) {
+        this.admLogged = status;
+    }
+    public void admLogin(ObjectOutputStream outToServer, ObjectInputStream inFromServer) throws Exception {
         String user, password;
         System.out.println("\n>Digite o nome de usuario: ");
         user = read.nextLine();
         System.out.println("\n>Digite a senha: ");
         password = read.nextLine();
-        if(user.equals("admin") && password.equals("1234")) {
-            //Menu.adminMenu(this);
+        if(this.admLogged) {
+            System.out.println("\nNao foi possivel fazer login! (Administrador já está logado no sistema)");
+        }
+        else if(user.equals("admin") && password.equals("1234")) {
+            this.admLogged = true;
+            outToServer.reset();
+            outToServer.writeObject(this);
+            Menu.adminMenu(this, outToServer, inFromServer);
         }
         else {
             System.out.println("\nUsuario ou senha incorretos!");
         }
     }
-    public void login() {
+    public void login(ObjectInputStream inFromServer) throws Exception {
         String email, password;
         Collaborator person = null;
         System.out.println("\n>Digite seu email: ");
@@ -63,7 +79,7 @@ public class Laboratory implements Serializable, Cloneable {
             System.out.println("\nEmail nao cadastrado!");
         }
         else if(person.getPassword().equals(password)){
-            Menu.collaboratorMenu(this, person);
+            Menu.collaboratorMenu(this, person, inFromServer);
         }
         else {
             System.out.println("\nEmail ou senha incorretos!");
@@ -148,7 +164,7 @@ public class Laboratory implements Serializable, Cloneable {
         }
         return null;
     }
-    public void addNewCollaborator() {
+    public void addNewCollaborator(ObjectOutputStream outToServer) throws Exception {
         CompareName cn = new CompareName();
         Collaborator newCollaborator;
         System.out.println("\n");
@@ -164,8 +180,10 @@ public class Laboratory implements Serializable, Cloneable {
         System.out.println("\n");
         System.out.println(newCollaborator);
         Collections.sort(collaborators, cn);
+        outToServer.reset();
+        outToServer.writeObject(this);
     }
-    public void editCollaborator() {
+    public void editCollaborator(ObjectOutputStream outToServer) throws Exception {
         int selec;
         System.out.println("\n>Selecione o colaborador que deseja editar:");
         Collaborator person = searchCollaborator(collaborators);
@@ -195,6 +213,8 @@ public class Laboratory implements Serializable, Cloneable {
         }
         System.out.println("\n");
         System.out.println(person);
+        outToServer.reset();
+        outToServer.writeObject(this);
     }
     public void setProjectTitle(Project pj) {
         String title;
@@ -338,7 +358,7 @@ public class Laboratory implements Serializable, Cloneable {
         System.out.println("\n>Mudar status: ");
         pj.changeStatus();
     }
-    public void addNewProject() {
+    public void addNewProject(ObjectOutputStream outToServer) throws Exception {
         CompareTitle ct = new CompareTitle();
         Project newProject = new Project();
         int selec; 
@@ -388,8 +408,10 @@ public class Laboratory implements Serializable, Cloneable {
         Collections.sort(projects, ct); // mantem a lista de projetos em ordem alfabetica
         System.out.println("\n");
         System.out.println(newProject);
+        outToServer.reset();
+        outToServer.writeObject(this);
     }
-    public void editProject() {
+    public void editProject(ObjectOutputStream outToServer) throws Exception {
         int selec;
         System.out.println("\n>Selecione o projeto que deseja editar:");
         Project pj = searchProject(projects);
@@ -454,10 +476,12 @@ public class Laboratory implements Serializable, Cloneable {
         else if(selec == 10) {
             changeProjectStatus(pj); 
         }
+        outToServer.reset();
+        outToServer.writeObject(this);
         System.out.println("\n");
         System.out.println(pj);
     }
-    public void addPublication() {
+    public void addPublication(ObjectOutputStream outToServer) throws Exception {
         String title;
         int yearOfPublication, selec;
         Collaborator author;
@@ -530,8 +554,10 @@ public class Laboratory implements Serializable, Cloneable {
         productions.add(newPublication);
         System.out.println("\n");
         System.out.println(newPublication);
+        outToServer.reset();
+        outToServer.writeObject(this);
     }
-    public void addGuidance() {
+    public void addGuidance(ObjectOutputStream outToServer) throws Exception {
         int selec;
         String title;
         int yearOfPublication;
@@ -589,8 +615,10 @@ public class Laboratory implements Serializable, Cloneable {
         student.addAcademicProduction(newGuidance);
         System.out.println("\n");
         System.out.println(newGuidance);
+        outToServer.reset();
+        outToServer.writeObject(this);
     }
-    public void addAcademicProductionMenu() {
+    public void addAcademicProductionMenu(ObjectOutputStream outToServer) throws Exception{
         int selec;
         System.out.println("\n");
         System.out.println("#########--ADICIONAR PRODUCAO ACADEMICA--#########");
@@ -603,10 +631,10 @@ public class Laboratory implements Serializable, Cloneable {
             return;
         }
         else if(selec == 1) {
-            addPublication();
+            addPublication(outToServer);
         }
         else if(selec == 2) {
-            addGuidance();
+            addGuidance(outToServer);
         }
     }
     public Collaborator searchCollaborator(ArrayList<Collaborator> collaborators) {

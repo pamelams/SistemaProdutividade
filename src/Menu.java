@@ -1,8 +1,10 @@
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 public class Menu {
 
-    public static void homePage(Laboratory lab) {
+    public static void homePage(Laboratory lab, ObjectOutputStream outToServer, ObjectInputStream inFromServer) throws Exception {
         int selec;
         do{
             System.out.println("\n");
@@ -17,15 +19,15 @@ public class Menu {
                 return;
             }
             else if(selec == 1){
-                lab.admLogin();
+                lab.admLogin(outToServer, inFromServer);
             }
             else if(selec == 2){
-                lab.login();
+                lab.login(inFromServer);
             }
         } while(selec != 0);
     }
     /* Menu dos colaboradores */
-    public static void collaboratorMenu(Laboratory lab, Collaborator me) {
+    public static void collaboratorMenu(Laboratory lab, Collaborator me, ObjectInputStream inFromServer) throws Exception {
         int selec;
         do {
             System.out.println("\n");
@@ -53,10 +55,11 @@ public class Menu {
             else if(selec == 4) {
                 lab.printMyInformation(me);
             }
+           // lab = (Laboratory) inFromServer.readObject();
         } while(selec != 0);
     }
     /* Menu do administrador */
-    public static void adminMenu(Laboratory lab, ObjectOutputStream outToServer) throws Exception {
+    public static void adminMenu(Laboratory lab, ObjectOutputStream outToServer, ObjectInputStream inFromServer) throws Exception {
         int selec;
         do {
             System.out.println("\n");
@@ -75,24 +78,27 @@ public class Menu {
             System.out.println("------------------------------------");
             selec = ReadData.readOption(0, 9);
             if(selec == 0){
+                //outToServer.reset();
+                //outToServer.writeObject(lab);
+                lab.setAdmLogged(false);
                 outToServer.reset();
                 outToServer.writeObject(lab);
                 return;
             }
             else if(selec == 1){
-                lab.addNewCollaborator();
+                lab.addNewCollaborator(outToServer);
             }
             else if(selec == 2){
-                lab.editCollaborator();
+                lab.editCollaborator(outToServer);
             }
             else if(selec == 3){
-                lab.addNewProject();
+                lab.addNewProject(outToServer);
             }
             else if(selec == 4){
-                lab.editProject();   
+                lab.editProject(outToServer);   
             }
             else if(selec == 5){
-                lab.addAcademicProductionMenu();
+                lab.addAcademicProductionMenu(outToServer);
             }
             else if(selec == 6){
                 lab.searchByCollaborator();
@@ -106,6 +112,7 @@ public class Menu {
             else if(selec == 9){
                 lab.productionReport();
             }
+            //lab = (Laboratory) inFromServer.readObject();
         } while(selec != 0);
     }
 }
