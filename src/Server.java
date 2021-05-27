@@ -5,7 +5,6 @@ import java.util.ArrayList;
 class Server {
 
 	public static Laboratory lab;
-	public static String test = "not modified";
 
 	public static void main(String argv[]) throws Exception {
 
@@ -33,11 +32,5 @@ class Server {
 	}
 	public static void updateLab(Laboratory newLab) throws CloneNotSupportedException {
 		lab = newLab.clone();
-	}
-	public static String readTest() {
-		return test;
-	}
-	public static void updateTest(String newTest) {
-		test = newTest;
 	}
 }
