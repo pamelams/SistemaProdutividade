@@ -9,9 +9,9 @@ class Server {
 
 	public static void main(String argv[]) throws Exception {
 		
-		System.out.println("SERVIDOR INICIOU, ESPERANDO CONEXÃO NA PORTA 6789!");
+		System.out.println("SERVIDOR INICIOU, ESPERANDO CONEXÃO NA PORTA 8888!");
 		
-		ServerSocket welcomeSocket = new ServerSocket(6789);
+		ServerSocket welcomeSocket = new ServerSocket(8888);
 
 		while (true) {
 

@@ -20,13 +20,14 @@ public class ClientThread implements Runnable {
 		String capitalizedSentence;
 		String newTest;
 		String oldTest;
+		String request;
 		Laboratory l, newLab;
 
 		ObjectInputStream inFromClient;
-		//DataOutputStream outToClient;
+		BufferedReader intFromClient;
 		ObjectOutputStream outToClient;
 		try {
-			//inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
+			intFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
 
 			inFromClient = new ObjectInputStream(connectionSocket.getInputStream());
 
@@ -42,8 +43,40 @@ public class ClientThread implements Runnable {
 			capitalizedSentence = clientSentence.toUpperCase() + '\n';
 
 			outToClient.writeBytes(oldTest + newTest + capitalizedSentence);*/
+			//request = intFromClient.read();
+			while(connectionSocket.isConnected()) {
+				request = intFromClient.readLine();
+				System.out.println("request = " + request);
 
-			l = Server.getLab();
+				if(request.contains("1")) {		// envia lab para o cliente
+					System.out.println("Enviar lab para o cliente");
+					l = Server.getLab();
+					outToClient.reset();
+					outToClient.writeObject(l);
+				}
+				else if(request.contains("2")) {		// atualizar lab
+					System.out.println("Att lab");
+					newLab = (Laboratory) inFromClient.readObject();
+					Server.updateLab(newLab);
+				}
+				else if(request.contains("3")) {		// administrador logou
+					System.out.println("adm logou");
+					Server.getLab().setAdmLogged(true);
+				}
+				else if(request.contains("4")) {		// administrador saiu
+					System.out.println("adm saiu");
+					Server.getLab().setAdmLogged(false);
+				}
+				else if(request.contains("5")) {			// desconectar
+					System.out.println("cliente desconectou");
+					break;
+				}
+				else {
+					System.out.println("nenhum");
+				}
+			}
+			
+			/*l = Server.getLab();
 			outToClient.reset();
 			outToClient.writeObject(l);
 
@@ -54,7 +87,7 @@ public class ClientThread implements Runnable {
 			else {
 				System.out.println(l.getCollaborators().get(0).getName());
 			}
-			Server.updateLab(newLab);
+			Server.updateLab(newLab);*/
 			
 				
 			//outToClient.reset();

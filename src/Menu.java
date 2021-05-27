@@ -1,10 +1,11 @@
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 public class Menu {
 
-    public static void homePage(Laboratory lab, ObjectOutputStream outToServer, ObjectInputStream inFromServer) throws Exception {
+    public static void homePage(Laboratory lab, ObjectOutputStream outToServer, ObjectInputStream inFromServer, DataOutputStream intToServer) throws Exception {
         int selec;
         do{
             System.out.println("\n");
@@ -16,18 +17,19 @@ public class Menu {
             System.out.println("--------------------------------------------------------");
             selec = ReadData.readOption(0, 2);
             if(selec == 0){
+                intToServer.writeBytes("5" + '\n');
                 return;
             }
             else if(selec == 1){
-                lab.admLogin(outToServer, inFromServer);
+                lab.admLogin(outToServer, inFromServer, intToServer);
             }
             else if(selec == 2){
-                lab.login(inFromServer);
+                lab.login(inFromServer, intToServer);
             }
         } while(selec != 0);
     }
     /* Menu dos colaboradores */
-    public static void collaboratorMenu(Laboratory lab, Collaborator me, ObjectInputStream inFromServer) throws Exception {
+    public static void collaboratorMenu(Laboratory lab, Collaborator me, ObjectInputStream inFromServer, DataOutputStream intToServer) throws Exception {
         int selec;
         do {
             System.out.println("\n");
@@ -55,11 +57,12 @@ public class Menu {
             else if(selec == 4) {
                 lab.printMyInformation(me);
             }
-           // lab = (Laboratory) inFromServer.readObject();
+            intToServer.writeBytes("1" + '\n');
+            lab = (Laboratory) inFromServer.readObject();
         } while(selec != 0);
     }
     /* Menu do administrador */
-    public static void adminMenu(Laboratory lab, ObjectOutputStream outToServer, ObjectInputStream inFromServer) throws Exception {
+    public static void adminMenu(Laboratory lab, ObjectOutputStream outToServer, ObjectInputStream inFromServer, DataOutputStream intToServer) throws Exception {
         int selec;
         do {
             System.out.println("\n");
@@ -80,25 +83,26 @@ public class Menu {
             if(selec == 0){
                 //outToServer.reset();
                 //outToServer.writeObject(lab);
-                lab.setAdmLogged(false);
+                /*lab.setAdmLogged(false);
                 outToServer.reset();
-                outToServer.writeObject(lab);
+                outToServer.writeObject(lab);*/
+                intToServer.writeBytes("4" + '\n');
                 return;
             }
             else if(selec == 1){
-                lab.addNewCollaborator(outToServer);
+                lab.addNewCollaborator(outToServer, intToServer);
             }
             else if(selec == 2){
-                lab.editCollaborator(outToServer);
+                lab.editCollaborator(outToServer, intToServer);
             }
             else if(selec == 3){
-                lab.addNewProject(outToServer);
+                lab.addNewProject(outToServer, intToServer);
             }
             else if(selec == 4){
-                lab.editProject(outToServer);   
+                lab.editProject(outToServer, intToServer);   
             }
             else if(selec == 5){
-                lab.addAcademicProductionMenu(outToServer);
+                lab.addAcademicProductionMenu(outToServer, intToServer);
             }
             else if(selec == 6){
                 lab.searchByCollaborator();
@@ -112,7 +116,6 @@ public class Menu {
             else if(selec == 9){
                 lab.productionReport();
             }
-            //lab = (Laboratory) inFromServer.readObject();
         } while(selec != 0);
     }
 }
