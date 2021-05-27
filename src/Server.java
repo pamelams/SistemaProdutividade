@@ -4,10 +4,17 @@ import java.util.ArrayList;
 
 class Server {
 
-	public static Laboratory lab = new Laboratory();
+	public static Laboratory lab;
 	public static String test = "not modified";
 
 	public static void main(String argv[]) throws Exception {
+
+		Collaborator c1 = new Professor("Ana Santos","ana@email.com", "123");
+        Collaborator c2 = new Professor("Jose Pereira","jose@email.com", "123");
+        ArrayList<Collaborator> c = new ArrayList<Collaborator>();
+        c.add(c1);
+        c.add(c2);
+		lab = new Laboratory(c);
 		
 		System.out.println("SERVIDOR INICIOU, ESPERANDO CONEXÃO NA PORTA 8888!");
 		
@@ -25,20 +32,7 @@ class Server {
 		return Server.lab;
 	}
 	public static void updateLab(Laboratory newLab) throws CloneNotSupportedException {
-		if(newLab.getCollaborators().isEmpty()) {
-			System.out.println("VAZIO NO SERVIDOR!");
-		}
-		else {
-			System.out.println(newLab.getCollaborators().get(0).getName());
-		}
-		System.out.println("UPDATED!");
 		lab = newLab.clone();
-		if(lab.getCollaborators().isEmpty()) {
-			System.out.println("VAZIO NO UPDATE!");
-		}
-		else {
-			System.out.println(lab.getCollaborators().get(0).getName());
-		}
 	}
 	public static String readTest() {
 		return test;

@@ -16,10 +16,6 @@ public class ClientThread implements Runnable {
 	}
 
 	public void run() {
-		String clientSentence;
-		String capitalizedSentence;
-		String newTest;
-		String oldTest;
 		String request;
 		Laboratory l, newLab;
 
@@ -28,71 +24,37 @@ public class ClientThread implements Runnable {
 		ObjectOutputStream outToClient;
 		try {
 			intFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
-
 			inFromClient = new ObjectInputStream(connectionSocket.getInputStream());
-
-			//outToClient = new DataOutputStream(connectionSocket.getOutputStream());
 			outToClient = new ObjectOutputStream(connectionSocket.getOutputStream());
 
-
-			/*clientSentence = inFromClient.readLine();
-			this.test = clientSentence;
-			oldTest = Servidor.readTest();
-			Servidor.updateTest(clientSentence);
-			newTest = Servidor.readTest();
-			capitalizedSentence = clientSentence.toUpperCase() + '\n';
-
-			outToClient.writeBytes(oldTest + newTest + capitalizedSentence);*/
-			//request = intFromClient.read();
 			while(connectionSocket.isConnected()) {
-				request = intFromClient.readLine();
-				System.out.println("request = " + request);
+				request = intFromClient.readLine();		// recebe requisição do cliente
+				System.out.println("Request = " + request + ":");
 
-				if(request.contains("1")) {		// envia lab para o cliente
-					System.out.println("Enviar lab para o cliente");
+				if(request.contains("1")) {				// envia lab para o cliente
+					System.out.println("Enviar laboratorio atualizado para o cliente.\n");
 					l = Server.getLab();
 					outToClient.reset();
 					outToClient.writeObject(l);
 				}
 				else if(request.contains("2")) {		// atualizar lab
-					System.out.println("Att lab");
+					System.out.println("Receber atualizacao no laboratorio.\n");
 					newLab = (Laboratory) inFromClient.readObject();
 					Server.updateLab(newLab);
 				}
 				else if(request.contains("3")) {		// administrador logou
-					System.out.println("adm logou");
+					System.out.println("Administrador logado no sistema.\n");
 					Server.getLab().setAdmLogged(true);
 				}
 				else if(request.contains("4")) {		// administrador saiu
-					System.out.println("adm saiu");
+					System.out.println("Administrador deslogado do sistema.\n");
 					Server.getLab().setAdmLogged(false);
 				}
 				else if(request.contains("5")) {			// desconectar
-					System.out.println("cliente desconectou");
+					System.out.println("Cliente desconectou.\n");
 					break;
 				}
-				else {
-					System.out.println("nenhum");
-				}
 			}
-			
-			/*l = Server.getLab();
-			outToClient.reset();
-			outToClient.writeObject(l);
-
-			newLab = (Laboratory) inFromClient.readObject();	
-			if(l.getCollaborators().isEmpty()) {
-				System.out.println("VAZIO NA THREAD!");
-			}
-			else {
-				System.out.println(l.getCollaborators().get(0).getName());
-			}
-			Server.updateLab(newLab);*/
-			
-				
-			//outToClient.reset();
-			//outToClient.writeObject(Server.getLab());	
-			//(connectionSocket.isConnected())
 
 		} catch (Exception e) {
 			e.printStackTrace();

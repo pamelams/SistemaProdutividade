@@ -19,10 +19,8 @@ public class Laboratory implements Serializable, Cloneable {
 
     }
 
-    public Laboratory(ArrayList<Collaborator> c, ArrayList<Project> p, ArrayList<AcademicProduction> ap) {
+    public Laboratory(ArrayList<Collaborator> c) {
         this.collaborators = c;
-        this.projects = p;
-        this.productions = ap;
     }
 
     public ArrayList<Collaborator> getCollaborators() {

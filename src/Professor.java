@@ -5,8 +5,8 @@ public class Professor extends Collaborator implements Serializable {
     public Professor() {
         
     }
-    public Professor(String name, String email, String password, ArrayList<Project> history, ArrayList<AcademicProduction> academicProduction) {
-        super(name, email, password, history, academicProduction);
+    public Professor(String name, String email, String password) {
+        super(name, email, password);
     }
 
     @Override

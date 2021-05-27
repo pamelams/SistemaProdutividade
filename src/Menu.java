@@ -24,6 +24,8 @@ public class Menu {
                 lab.admLogin(outToServer, inFromServer, intToServer);
             }
             else if(selec == 2){
+                intToServer.writeBytes("1" + '\n');
+                lab = (Laboratory) inFromServer.readObject();
                 lab.login(inFromServer, intToServer);
             }
         } while(selec != 0);
@@ -46,19 +48,25 @@ public class Menu {
                 return;
             }
             else if(selec == 1){
+                intToServer.writeBytes("1" + '\n');
+                lab = (Laboratory) inFromServer.readObject();
                 lab.searchByCollaborator();
             }
             else if(selec == 2){
+                intToServer.writeBytes("1" + '\n');
+                lab = (Laboratory) inFromServer.readObject();
                 lab.searchByProject();
             }
             else if(selec == 3) {
+                intToServer.writeBytes("1" + '\n');
+                lab = (Laboratory) inFromServer.readObject();
                 lab.searchByProduction();
             }
             else if(selec == 4) {
+                intToServer.writeBytes("1" + '\n');
+                lab = (Laboratory) inFromServer.readObject();
                 lab.printMyInformation(me);
             }
-            intToServer.writeBytes("1" + '\n');
-            lab = (Laboratory) inFromServer.readObject();
         } while(selec != 0);
     }
     /* Menu do administrador */
@@ -81,11 +89,6 @@ public class Menu {
             System.out.println("------------------------------------");
             selec = ReadData.readOption(0, 9);
             if(selec == 0){
-                //outToServer.reset();
-                //outToServer.writeObject(lab);
-                /*lab.setAdmLogged(false);
-                outToServer.reset();
-                outToServer.writeObject(lab);*/
                 intToServer.writeBytes("4" + '\n');
                 return;
             }

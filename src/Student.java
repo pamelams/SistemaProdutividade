@@ -9,8 +9,8 @@ public class Student extends Collaborator implements Serializable {
         this.type = type; 
         this.status = 0;
     }
-    public Student(String name, String email, String password, ArrayList<Project> history, ArrayList<AcademicProduction> academicProduction, String type) {
-        super(name, email, password, history, academicProduction);
+    public Student(String name, String email, String password, String type) {
+        super(name, email, password);
         this.type = type; 
         this.status = 0;
     }
